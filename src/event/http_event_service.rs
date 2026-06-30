@@ -199,7 +199,7 @@ pub async fn list_topic_subscriptions() -> Result<Json<Vec<Pubsub>>, StatusCode>
     let pubsub_user = Pubsub {
         pubsubname: "pubsub".to_string(),
         topic: "user/user/created".to_string(),
-        route: "/on-id-creation-event".to_string(),
+        route: "/on-user-creation-event".to_string(),
     };
     let pubsub_user_address = Pubsub {
         pubsubname: "pubsub".to_string(),
