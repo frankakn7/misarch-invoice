@@ -42,6 +42,7 @@ pub struct Event<T> {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 /// Relevant part of vendor address creation event.
 pub struct VendorAddressEventData {
     /// Vendor address UUID.
@@ -61,6 +62,7 @@ pub struct VendorAddressEventData {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 /// Relevant part of user creation event data.
 pub struct UserEventData {
     /// User UUID.
