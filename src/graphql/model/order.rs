@@ -15,6 +15,7 @@ pub struct Order {
 
 /// Describes if order is placed, or yet pending. An order can be rejected during its lifetime.
 #[derive(Debug, Enum, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderStatus {
     Pending,
     Placed,
@@ -23,6 +24,7 @@ pub enum OrderStatus {
 
 /// Describes the reason why an order was rejected, in case of rejection: `OrderStatus::Rejected`.
 #[derive(Debug, Enum, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum RejectionReason {
     InvalidOrderData,
     InventoryReservationFailed,
