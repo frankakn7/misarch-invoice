@@ -397,7 +397,7 @@ pub async fn insert_user_address_in_mongodb(
     match collection
         .update_one(
             doc! {"_id": user_address.user_id },
-            doc! {"$push": {"user_addresses": user_address }},
+            doc! {"$push": {"addresses": user_address }},
             None,
         )
         .await
@@ -418,7 +418,7 @@ pub async fn remove_user_address_in_mongodb(
     match collection
         .update_one(
             doc! {"_id": user_address_event_data.user_id },
-            doc! {"$pull": {"user_addresses._id": user_address_event_data.id }},
+            doc! {"$pull": {"addresses._id": user_address_event_data.id }},
             None,
         )
         .await
