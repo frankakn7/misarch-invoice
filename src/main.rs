@@ -15,7 +15,7 @@ use axum::{
 };
 use clap::{arg, command, Parser};
 
-use log::{info, Level};
+use log::info;
 use mongodb::{options::ClientOptions, Client, Database};
 
 use once_cell::sync::Lazy;
@@ -113,7 +113,8 @@ struct Args {
 /// Activates logger and parses argument for optional schema generation. Otherwise starts gRPC and GraphQL server.
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    simple_logger::init_with_level(Level::Warn).unwrap();
+    env_logger::init();
+    info!("Invoice service starting");
 
     let args = Args::parse();
     if args.generate_schema {

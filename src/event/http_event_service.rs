@@ -1,7 +1,7 @@
 use async_graphql::Result;
 use axum::{debug_handler, extract::State, http::StatusCode, Json};
 use bson::{doc, Uuid};
-use log::info;
+use log::{error, info};
 use mongodb::{options::UpdateOptions, Collection};
 use serde::{Deserialize, Serialize};
 
@@ -237,7 +237,10 @@ pub async fn on_discount_order_validation_succeeded_event(
         "discount/order/validation-succeeded" => {
             let invoice = Invoice::new(event.data.order.clone(), &state)
                 .await
-                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+                .map_err(|e| {
+                    error!("Failed to create invoice: {:?}", e);
+                    StatusCode::INTERNAL_SERVER_ERROR
+                })?;
             let invoice_dto = InvoiceDTO::from(invoice.clone());
             let invoice_created_dto = InvoiceCreatedDTO::from((event.data.order, invoice_dto));
             insert_invoice_in_mongodb(&state.invoice_collection, invoice).await?;
