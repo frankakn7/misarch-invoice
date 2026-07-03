@@ -379,7 +379,15 @@ pub async fn create_or_update_vendor_address_in_mongodb(
     match collection
         .update_one(
             doc! {"_id": vendor_address._id },
-            doc! {"$set": {"_id": vendor_address._id}},
+            doc! {"$set": {
+                "_id": vendor_address._id,
+                "street1": vendor_address.street1,
+                "street2": vendor_address.street2,
+                "city": vendor_address.city,
+                "postal_code": vendor_address.postal_code,
+                "country": vendor_address.country,
+                "company_name": vendor_address.company_name,
+            }},
             update_options,
         )
         .await

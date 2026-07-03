@@ -1,5 +1,6 @@
 use async_graphql::{Error, Result, SimpleObject};
 use bson::{doc, DateTime, Uuid};
+use log::error;
 use mongodb::{options::FindOneOptions, Collection};
 use serde::{Deserialize, Serialize};
 
@@ -122,10 +123,16 @@ async fn invoice_attribute_setup(
     let order_item_invoice_overview = build_order_item_invoice_content(order_event_data);
     let user_address_user =
         query_user_address_user(&state.user_collection, order_event_data.invoice_address_id)
-            .await?;
-    let user_address = project_user_to_user_address(user_address_user)?;
-    let vendor_address = query_vendor_address(&state.vendor_address_collection).await?;
-    let user = query_object(&state.user_collection, order_event_data.user_id).await?;
+            .await
+            .map_err(|e| { error!("step 1 query_user_address_user: {:?}", e); e })?;
+    let user_address = project_user_to_user_address(user_address_user)
+        .map_err(|e| { error!("step 2 project_user_to_user_address: {:?}", e); e })?;
+    let vendor_address = query_vendor_address(&state.vendor_address_collection)
+        .await
+        .map_err(|e| { error!("step 3 query_vendor_address: {:?}", e); e })?;
+    let user = query_object(&state.user_collection, order_event_data.user_id)
+        .await
+        .map_err(|e| { error!("step 4 query_object user: {:?}", e); e })?;
     Ok((
         issued_at,
         issued_at_string,
@@ -159,7 +166,9 @@ pub async fn query_user_address_user(
     let find_options = FindOneOptions::builder()
         .projection(Some(doc! {
             "addresses.$": 1,
-            "_id": 1
+            "_id": 1,
+            "first_name": 1,
+            "last_name": 1,
         }))
         .build();
     let message = format!("Address of UUID: `{}` not found.", address_id);
